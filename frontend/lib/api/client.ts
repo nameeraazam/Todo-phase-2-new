@@ -22,31 +22,33 @@ export async function apiRequest<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
-  // Always use mock API for now to ensure frontend builds successfully
-  try {
-    if (endpoint === '/todos' && options.method === 'GET') {
-      return await getMockTodos();
-    } else if (endpoint === '/todos' && options.method === 'POST') {
-      const data = JSON.parse((options.body as string) || '{}');
-      return await createMockTodo(data.title);
-    } else if (endpoint.startsWith('/todos/') && options.method === 'PUT') {
-      const id = endpoint.split('/')[2];
-      const data = JSON.parse((options.body as string) || '{}');
-      return await updateMockTodo(id, data);
-    } else if (endpoint.startsWith('/todos/') && options.method === 'DELETE') {
-      const id = endpoint.split('/')[2];
-      return await deleteMockTodo(id);
+  // Use mock API if no backend is configured
+  if (!API_BASE_URL || API_BASE_URL === '') {
+    try {
+      if (endpoint === '/todos' && options.method === 'GET') {
+        return await getMockTodos();
+      } else if (endpoint === '/todos' && options.method === 'POST') {
+        const data = JSON.parse((options.body as string) || '{}');
+        return await createMockTodo(data.title);
+      } else if (endpoint.startsWith('/todos/') && options.method === 'PUT') {
+        const id = endpoint.split('/')[2];
+        const data = JSON.parse((options.body as string) || '{}');
+        return await updateMockTodo(id, data);
+      } else if (endpoint.startsWith('/todos/') && options.method === 'DELETE') {
+        const id = endpoint.split('/')[2];
+        return await deleteMockTodo(id);
+      }
+    } catch (error: any) {
+      return {
+        error: {
+          code: 'MOCK_ERROR',
+          message: error.message || 'Mock API error occurred',
+        },
+      };
     }
-  } catch (error: any) {
-    return {
-      error: {
-        code: 'MOCK_ERROR',
-        message: error.message || 'Mock API error occurred',
-      },
-    };
   }
 
-  // Fallback to real API if needed later
+  // Use real API if backend is configured
   if (API_BASE_URL) {
     try {
       const session = await getSession();
@@ -82,16 +84,33 @@ export async function apiRequest<T>(
       const data = await response.json();
       return { data };
     } catch (error: any) {
-      return {
-        error: {
-          code: 'NETWORK_ERROR',
-          message: error.message || 'Network error occurred',
-        },
-      };
+      // If real API fails, fall back to mock API
+      try {
+        if (endpoint === '/todos' && options.method === 'GET') {
+          return await getMockTodos();
+        } else if (endpoint === '/todos' && options.method === 'POST') {
+          const data = JSON.parse((options.body as string) || '{}');
+          return await createMockTodo(data.title);
+        } else if (endpoint.startsWith('/todos/') && options.method === 'PUT') {
+          const id = endpoint.split('/')[2];
+          const data = JSON.parse((options.body as string) || '{}');
+          return await updateMockTodo(id, data);
+        } else if (endpoint.startsWith('/todos/') && options.method === 'DELETE') {
+          const id = endpoint.split('/')[2];
+          return await deleteMockTodo(id);
+        }
+      } catch (mockError: any) {
+        return {
+          error: {
+            code: 'FALLBACK_ERROR',
+            message: mockError.message || 'Both real and mock APIs failed',
+          },
+        };
+      }
     }
   }
 
-  // If no API_BASE_URL is set, return mock data
+  // Default fallback
   return {
     error: {
       code: 'NO_BACKEND',
