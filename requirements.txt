@@ -1,0 +1,12 @@
+# Node.js Dependencies (converted for reference)
+# Note: These are npm packages, not python packages.
+# To install them, use 'npm install' in the backend directory.
+
+express==4.18.2
+cors==2.8.5
+uuid==9.0.0
+mongoose==9.1.5
+dotenv==17.2.3
+jsonwebtoken==9.0.3
+bcryptjs==3.0.3
+axios==1.13.2

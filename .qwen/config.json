@@ -1,0 +1,9 @@
+{
+  "contentGenerator": {
+    "timeout": 180000,
+    "maxRetries": 3
+  },
+  "api": {
+    "timeout": 180000
+  }
+}
