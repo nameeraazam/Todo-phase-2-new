@@ -1,20 +1,26 @@
-# Use the official Node.js runtime as the base image
-FROM node:18-alpine
+FROM python:3.9-slim
 
-# Set the working directory in the container
+# Install Node.js and npm
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the working directory
-COPY package*.json ./
+# Copy Python requirements and install them
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the application code to the working directory
+# Copy the rest of the application
 COPY . .
 
-# Expose port 5000 to allow communication to/from the Todo backend
+# Install Node.js dependencies
+RUN npm install
+
+# Expose port
 EXPOSE 5000
 
-# Define the command to run the application
-CMD ["npm", "start"]
+# Start the application
+CMD ["python", "app.py"]

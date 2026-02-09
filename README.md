@@ -9,6 +9,18 @@ This is a full-stack todo application with a Next.js frontend and Express.js bac
 
 ## Deployment
 
+### Backend (Express.js) on Hugging Face Spaces
+
+The backend is prepared for deployment on Hugging Face Spaces:
+
+1. Go to [Hugging Face](https://huggingface.co)
+2. Create a new Space
+3. Upload all files in the `backend` directory
+4. Set environment variables:
+   - `MONGODB_URI`: your MongoDB connection string (e.g., from MongoDB Atlas)
+   - `FRONTEND_URL`: your Vercel frontend URL (after frontend deployment)
+5. Note the backend URL after deployment (format: https://your-username-huggingface-space.hf.space)
+
 ### Frontend (Next.js) on Vercel
 
 The frontend is ready for deployment on Vercel:
@@ -17,27 +29,10 @@ The frontend is ready for deployment on Vercel:
 2. Sign in and click "New Project"
 3. Import your GitHub repository
 4. Select the `frontend` directory as the project root
-5. Vercel will automatically detect it's a Next.js project and configure the build
-6. Click "Deploy"
-
-### Backend (Express.js) on Heroku/Railway/Render
-
-The backend can be deployed to various platforms:
-
-#### Heroku
-1. Go to [Heroku](https://heroku.com)
-2. Create a new app
-3. Connect to your GitHub repository
-4. Enable automatic deploys
-5. Set environment variables (MONGODB_URI)
-6. Deploy the branch
-
-#### Railway
-1. Go to [Railway](https://railway.app)
-2. Create a new project
-3. Import from GitHub
-4. Set environment variables
-5. Deploy
+5. Add environment variable:
+   - `NEXT_PUBLIC_API_BASE_URL`: your Hugging Face backend URL (e.g., https://your-username-huggingface-space.hf.space/api)
+6. Vercel will automatically detect it's a Next.js project and configure the build
+7. Click "Deploy"
 
 ## Local Development
 
@@ -57,4 +52,5 @@ The backend can be deployed to various platforms:
 - Frontend: Next.js 14, React, TypeScript, Tailwind CSS
 - Backend: Node.js, Express.js, MongoDB
 - Authentication: JWT tokens
+- Deployment: Vercel (frontend), Hugging Face Spaces (backend)
 - Styling: Tailwind CSS
