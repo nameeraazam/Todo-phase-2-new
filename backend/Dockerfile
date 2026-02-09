@@ -2,7 +2,7 @@ FROM python:3.9-slim
 
 # Install Node.js and npm
 RUN apt-get update && \
-    apt-get install -y curl && \
+    apt-get install -y curl gnupg && \
     curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y nodejs && \
     rm -rf /var/lib/apt/lists/*
