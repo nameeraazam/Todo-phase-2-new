@@ -1,2 +1,2 @@
-gradio
-pyngrok
+flask
+requests

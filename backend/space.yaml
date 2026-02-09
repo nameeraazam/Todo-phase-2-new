@@ -1,5 +1,4 @@
 runtime:
   huggingface:spaces
+  sdk: docker
   hardware: cpu-basic
-  secrets: []
-  env_variables: []

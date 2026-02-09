@@ -11,16 +11,16 @@ WORKDIR /app
 
 # Copy Python requirements and install them
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application
 COPY . .
 
 # Install Node.js dependencies
-RUN npm install
+RUN npm install --production
 
-# Expose port
-EXPOSE 5000
+# Expose port (Hugging Face typically uses port 7860)
+EXPOSE 7860
 
 # Start the application
 CMD ["python", "app.py"]
